@@ -2,10 +2,9 @@
 
 use crate::ImageFormat;
 use crate::KinectError;
-
-use std::ptr::null_mut;
-
 use k4a_sys_temp as k4a_sys;
+use std::ptr::null_mut;
+use crate::error::CreateImageError;
 
 /// Adapted from k4a-sys. Represents an image within a capture.
 #[derive(Debug)]
@@ -38,7 +37,7 @@ impl Image {
                   width: u32,
                   height: u32,
                   stride_bytes: u32)
-                  -> Result<Self, KinectError>
+                  -> Result<Self, CreateImageError>
     {
         let mut handle = null_mut();
 
@@ -53,7 +52,7 @@ impl Image {
         };
 
         if result != k4a_sys::k4a_result_t_K4A_RESULT_SUCCEEDED {
-            return Err(KinectError::UnableToCreateImage { error_code: result });
+            return Err(CreateImageError { error_code: result });
         }
 
         Ok(Image(handle))

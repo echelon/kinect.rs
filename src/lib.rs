@@ -25,6 +25,8 @@ pub use {
     transformation::Transformation,
 };
 
+pub mod error;
+
 /// A library error
 #[derive(Debug)]
 pub enum KinectError {
