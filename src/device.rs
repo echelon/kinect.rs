@@ -4,7 +4,6 @@ use crate::Calibration;
 use crate::Capture;
 use crate::CaptureError;
 use crate::DeviceConfiguration;
-use crate::GetCalibrationError;
 use crate::GetCaptureError;
 use crate::KinectError;
 use crate::SynchronizationJackStatus;
@@ -12,7 +11,7 @@ use crate::SynchronizationJackStatus;
 use k4a_sys_temp as k4a_sys;
 use std::mem::MaybeUninit;
 use std::{ptr, fmt};
-use crate::error::{DeviceOpenError, DeviceStartCamerasError};
+use crate::error::{DeviceOpenError, DeviceStartCamerasError, DeviceGetCalibrationError};
 
 /// A Kinect Device Handle
 #[derive(Debug)]
@@ -191,21 +190,11 @@ impl Device {
     pub fn get_calibration(&self,
                            depth_mode: k4a_sys::k4a_depth_mode_t,
                            color_resolution: k4a_sys::k4a_color_resolution_t)
-                           -> Result<Calibration, GetCalibrationError>
+                           -> Result<Calibration, DeviceGetCalibrationError>
     {
-        // TODO: Why isn't the way I've been using to init structures before still working?
-        //let mut calibration_buffer: k4a_sys::k4a_calibration_t = ptr::null_mut();
-        /*let mut calibration_buffer: k4a_sys::k4a_calibration_t = k4a_sys::k4a_calibration_t {
-          color_camera_calibration: 0,
-          color_resolution: 0,
-          depth_camera_calibration: 0,
-          depth_mode: 0,
-          extrinsics: [0,0,0,0],
-        };*/
+        let mut calibration_buffer: MaybeUninit<k4a_sys::k4a_calibration_t> = MaybeUninit::uninit();
 
-        unsafe {
-            let mut calibration_buffer: MaybeUninit<k4a_sys::k4a_calibration_t> = MaybeUninit::uninit();
-
+        let handle = unsafe {
             let result =  k4a_sys::k4a_device_get_calibration(
                 self.device_pointer,
                 depth_mode,
@@ -216,18 +205,17 @@ impl Device {
             match result {
                 k4a_sys::k4a_result_t_K4A_RESULT_SUCCEEDED  => { /* ok, continue */ },
                 k4a_sys::k4a_result_t_K4A_RESULT_FAILED => {
-                    return Err(GetCalibrationError::FailedError);
+                    return Err(DeviceGetCalibrationError::FailedError);
                 },
                 _ => {
-                    return Err(GetCalibrationError::UnknownError(result));
+                    return Err(DeviceGetCalibrationError::UnexpectedError(result));
                 },
             }
 
-            let handle = calibration_buffer.assume_init();
-            let calibration = Calibration(handle);
+            calibration_buffer.assume_init()
+        };
 
-            Ok(calibration)
-        }
+        Ok(Calibration(handle))
     }
 }
 

@@ -22,10 +22,35 @@ impl Error for CreateImageError {
     }
 }
 
+/// Represents errors opening devices with `k4a_device_get_calibration`.
+#[derive(Copy, Clone, Debug)]
+pub enum DeviceGetCalibrationError {
+    /// Failed to get device calibration.
+    FailedError,
+    /// Unexpected error code returned by libk4a.
+    UnexpectedError(u32),
+}
+
+impl fmt::Display for DeviceGetCalibrationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            DeviceGetCalibrationError::FailedError =>
+                write!(f, "DeviceGetCalibrationError::FailedError"),
+            DeviceGetCalibrationError::UnexpectedError(code) =>
+                write!(f, "DeviceGetCalibrationError::UnexpectedError (code: {})", code),
+        }
+    }
+}
+
+impl Error for DeviceGetCalibrationError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+
 /// Represents errors opening devices with `k4a_device_open`.
 #[derive(Copy, Clone, Debug)]
 pub struct DeviceOpenError {
-    /// The error code returned by libk4a.
     pub error_code: u32,
 }
 

@@ -69,13 +69,6 @@ impl Error for CaptureError {
     }
 }
 
-/// Errors for GetCalibration
-#[derive(Debug)]
-pub enum GetCalibrationError {
-    FailedError,
-    UnknownError(u32),
-}
-
 #[derive(Clone,Debug)]
 pub struct Resolution {
     pub width: i32,
