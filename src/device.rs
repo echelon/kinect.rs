@@ -12,6 +12,7 @@ use crate::SynchronizationJackStatus;
 use k4a_sys_temp as k4a_sys;
 use std::mem::MaybeUninit;
 use std::{ptr, fmt};
+use crate::error::DeviceOpenError;
 
 /// A Kinect Device Handle
 #[derive(Debug)]
@@ -40,13 +41,13 @@ impl Device {
     }
 
     /// Open a device with the given index
-    pub fn open(device_index: u32) -> Result<Self, KinectError> {
+    pub fn open(device_index: u32) -> Result<Self, DeviceOpenError> {
         let mut device_pointer: k4a_sys::k4a_device_t = ptr::null_mut();
-        unsafe {
-            let result = k4a_sys::k4a_device_open(device_index, &mut device_pointer);
-            if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
-                return Err(KinectError::UnableToOpen { error_code: result })
-            }
+        let result = unsafe {
+            k4a_sys::k4a_device_open(device_index, &mut device_pointer)
+        };
+        if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
+            return Err(DeviceOpenError { error_code: result })
         }
         Ok(Device {
             device_pointer,

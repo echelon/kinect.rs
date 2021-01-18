@@ -21,3 +21,22 @@ impl Error for CreateImageError {
         None
     }
 }
+
+/// Represents errors opening devices with `k4a_device_open`.
+#[derive(Copy, Clone, Debug)]
+pub struct DeviceOpenError {
+    /// The error code returned by libk4a.
+    pub error_code: u32,
+}
+
+impl fmt::Display for DeviceOpenError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "DeviceOpenError (code: {})", self.error_code)
+    }
+}
+
+impl Error for DeviceOpenError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
