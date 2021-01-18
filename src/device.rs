@@ -2,7 +2,6 @@
 
 use crate::Calibration;
 use crate::Capture;
-use crate::CaptureError;
 use crate::DeviceConfiguration;
 use crate::KinectError;
 use crate::SynchronizationJackStatus;

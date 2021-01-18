@@ -1,8 +1,5 @@
 //! High level interface for Azure Kinect.
 
-use std::error::Error;
-use std::fmt;
-
 // Re-export patched crate
 // Normally we'd follow k4a-sys upstream, but it doesn't properly build on Linux.
 pub use k4a_sys_temp as k4a_sys;
@@ -42,23 +39,6 @@ pub enum KinectError {
 pub struct SynchronizationJackStatus {
     pub sync_in_jack_connected: bool,
     pub sync_out_jack_connected: bool,
-}
-
-#[derive(Debug)]
-pub enum CaptureError {
-    NullCapture,
-}
-
-impl fmt::Display for CaptureError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "CaptureError")
-    }
-}
-
-impl Error for CaptureError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        None
-    }
 }
 
 #[derive(Clone,Debug)]

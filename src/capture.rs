@@ -1,12 +1,10 @@
 #![allow(unused)]
 
 use crate::Image;
-use crate::CaptureError;
+use k4a_sys_temp as k4a_sys;
 use std::ptr::null_mut;
 
-use k4a_sys_temp as k4a_sys;
-
-/// Adapted from k4a-sys. Represents a capture.
+/// Represents a single capture.
 #[derive(Debug)]
 pub struct Capture(pub k4a_sys::k4a_capture_t);
 
@@ -24,7 +22,7 @@ impl Drop for Capture {
     }
 }
 
-/// Handles are refcounted by libk4a. The final reference is destroyed
+// Handles are refcounted by libk4a. The final reference is destroyed.
 impl Clone for Capture {
     fn clone(&self) -> Self {
         // We must increment the refcount.
@@ -51,34 +49,37 @@ impl Clone for Capture {
 }
 
 impl Capture {
-    pub fn get_depth_image(&self) -> Result<Image, CaptureError> {
+    /// Get the depth image from the capture (if any).
+    pub fn get_depth_image(&self) -> Option<Image> {
         let image = unsafe {
             k4a_sys::k4a_capture_get_depth_image(self.0)
         };
         if image.is_null() {
-            return Err(CaptureError::NullCapture);
+            return None;
         }
-        Ok(Image(image))
+        Some(Image(image))
     }
 
-    pub fn get_color_image(&self) -> Result<Image, CaptureError> {
+    /// Get the color image from the capture (if any).
+    pub fn get_color_image(&self) -> Option<Image> {
         let image = unsafe {
             k4a_sys::k4a_capture_get_color_image(self.0)
         };
         if image.is_null() {
-            return Err(CaptureError::NullCapture);
+            return None;
         }
-        Ok(Image(image))
+        Some(Image(image))
     }
 
-    pub fn get_ir_image(&self) -> Result<Image, CaptureError> {
+    /// Get the IR image from the capture (if any).
+    pub fn get_ir_image(&self) -> Option<Image> {
         let image = unsafe {
             k4a_sys::k4a_capture_get_ir_image(self.0)
         };
         if image.is_null() {
-            return Err(CaptureError::NullCapture);
+            return None;
         }
-        Ok(Image(image))
+        Some(Image(image))
     }
 
     /// Returns the underlying opaque handle *without* an additional refcount.
