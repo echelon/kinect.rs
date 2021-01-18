@@ -12,7 +12,7 @@ use crate::SynchronizationJackStatus;
 use k4a_sys_temp as k4a_sys;
 use std::mem::MaybeUninit;
 use std::{ptr, fmt};
-use crate::error::DeviceOpenError;
+use crate::error::{DeviceOpenError, DeviceStartCamerasError};
 
 /// A Kinect Device Handle
 #[derive(Debug)]
@@ -108,18 +108,17 @@ impl Device {
         })
     }
 
-    // TODO: having a 'DeviceConfigurations' struct that goes unused is kind of gross.
-    /// Start the cameras
+    /// Start the cameras.
     pub fn start_cameras(&self,
-                         device_config: k4a_sys::k4a_device_configuration_t)
-                         -> Result<(), KinectError>
+                         device_config: &DeviceConfiguration)
+                         -> Result<(), DeviceStartCamerasError>
     {
         let result = unsafe {
-            k4a_sys::k4a_device_start_cameras(self.device_pointer, &device_config)
+            k4a_sys::k4a_device_start_cameras(self.device_pointer, &device_config.0)
         };
 
         if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
-            return Err(KinectError::UnableToStartCameras { error_code: result });
+            return Err(DeviceStartCamerasError { error_code: result });
         }
 
         return Ok(())
@@ -127,7 +126,7 @@ impl Device {
 
     // TODO: More sensible defaults, or get rid of this entirely.
     /// Start the cameras.
-    pub fn start_cameras_default_config(&self) -> Result<(), KinectError> {
+    pub fn start_cameras_default_config(&self) -> Result<(), DeviceStartCamerasError> {
         let mut device_config = DeviceConfiguration::new();
         // NB: Although the Kinect docs say this format isn't natively supported by the color camera
         // and that extra CPU is required, this is the only color mode supported by 'k4aviewer' 3D view.
@@ -136,7 +135,7 @@ impl Device {
         device_config.0.depth_mode = k4a_sys::k4a_depth_mode_t_K4A_DEPTH_MODE_NFOV_UNBINNED;
         device_config.0.camera_fps = k4a_sys::k4a_fps_t_K4A_FRAMES_PER_SECOND_30;
 
-        self.start_cameras(device_config.0)
+        self.start_cameras(&device_config)
     }
 
     /// Stops the color and depth camera capture.
