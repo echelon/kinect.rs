@@ -44,14 +44,6 @@ pub struct SynchronizationJackStatus {
     pub sync_out_jack_connected: bool,
 }
 
-/// Errors for GetCapture
-#[derive(Debug)]
-pub enum GetCaptureError {
-    TimeoutError,
-    FailedError,
-    UnknownError(u32),
-}
-
 #[derive(Debug)]
 pub enum CaptureError {
     NullCapture,

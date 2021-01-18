@@ -48,6 +48,36 @@ impl Error for DeviceGetCalibrationError {
     }
 }
 
+/// Represents errors opening devices with `k4a_device_get_capture`.
+#[derive(Copy, Clone, Debug)]
+pub enum DeviceGetCaptureError {
+    /// It took too long to get the capture, and our timeout elapsed.
+    TimeoutError,
+    /// There was a failure in getting the capture
+    FailedError,
+    /// Unexpected error code returned by libk4a
+    UnexpectedError(u32),
+}
+
+impl fmt::Display for DeviceGetCaptureError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            DeviceGetCaptureError::TimeoutError=>
+                write!(f, "DeviceGetCaptureError::TimeoutError"),
+            DeviceGetCaptureError::FailedError =>
+                write!(f, "DeviceGetCaptureError::FailedError"),
+            DeviceGetCaptureError::UnexpectedError(code) =>
+                write!(f, "DeviceGetCaptureError::UnexpectedError (code: {})", code),
+        }
+    }
+}
+
+impl Error for DeviceGetCaptureError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+
 /// Represents errors opening devices with `k4a_device_open`.
 #[derive(Copy, Clone, Debug)]
 pub struct DeviceOpenError {

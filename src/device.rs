@@ -4,14 +4,13 @@ use crate::Calibration;
 use crate::Capture;
 use crate::CaptureError;
 use crate::DeviceConfiguration;
-use crate::GetCaptureError;
 use crate::KinectError;
 use crate::SynchronizationJackStatus;
 
 use k4a_sys_temp as k4a_sys;
 use std::mem::MaybeUninit;
 use std::{ptr, fmt};
-use crate::error::{DeviceOpenError, DeviceStartCamerasError, DeviceGetCalibrationError};
+use crate::error::{DeviceOpenError, DeviceStartCamerasError, DeviceGetCalibrationError, DeviceGetCaptureError};
 
 /// A Kinect Device Handle
 #[derive(Debug)]
@@ -151,15 +150,15 @@ impl Device {
     }
 
     /// Get capture and return a new buffer.
-    pub fn get_capture(&self, timeout_ms: i32) -> Result<Capture, GetCaptureError> {
+    pub fn get_capture(&self, timeout_ms: i32) -> Result<Capture, DeviceGetCaptureError> {
         let mut capture_buffer: k4a_sys::k4a_capture_t = ptr::null_mut();
         self.get_capture_buffered(&mut capture_buffer, timeout_ms)
             .map(|_| Capture(capture_buffer)) // TODO: Can capture be null?
     }
 
-    /// Get capture and reuse an existing buffer.
+    /// Get capture, reusing an existing buffer.
     pub fn get_capture_buffered(&self, capture_buffer: &mut k4a_sys::k4a_capture_t, timeout_ms: i32)
-                                -> Result<(), GetCaptureError>
+                                -> Result<(), DeviceGetCaptureError>
     {
         let result = unsafe {
             k4a_sys::k4a_device_get_capture(self.device_pointer, capture_buffer, timeout_ms)
@@ -168,13 +167,13 @@ impl Device {
         match result {
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_SUCCEEDED => { /* ok, continue */ },
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_TIMEOUT => {
-                return Err(GetCaptureError::TimeoutError);
+                return Err(DeviceGetCaptureError::TimeoutError);
             },
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_FAILED => {
-                return Err(GetCaptureError::TimeoutError);
+                return Err(DeviceGetCaptureError::FailedError);
             }
             _ => {
-                return Err(GetCaptureError::UnknownError(result));
+                return Err(DeviceGetCaptureError::UnexpectedError(result));
             }
         }
 
