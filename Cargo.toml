@@ -1,8 +1,9 @@
 [package]
 name = "kinect"
-description = "(WIP) A library for kinect motion tracking."
-version = "0.0.0"
-keywords = [ "kinect", "vision", "tracking", "motion", "camera" ]
+description = "A high level interface for Azure Kinect"
+version = "0.0.1"
+edition = "2018"
+keywords = [ "azure", "kinect", "vision", "tracking", "camera" ]
 authors = ["Brandon Thomas <bt@brand.io>",
            "Brandon Thomas <echelon@gmail.com>"]
 license = "BSD-4-Clause"
@@ -10,6 +11,7 @@ repository = "https://github.com/echelon/kinect.rs"
 documentation = "https://docs.rs/kinect"
 
 [dependencies]
+k4a-sys-temp = "0.2.1"
 
 [dev_dependencies]
 expectest = "0.10"
