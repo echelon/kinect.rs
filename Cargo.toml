@@ -1,7 +1,7 @@
 [package]
 name = "kinect"
 description = "A high level interface for Azure Kinect"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2018"
 keywords = [ "azure", "kinect", "vision", "tracking", "camera" ]
 authors = ["Brandon Thomas <bt@brand.io>",
@@ -13,9 +13,8 @@ documentation = "https://docs.rs/kinect"
 [dependencies]
 k4a-sys-temp = "0.2.1"
 
-[dev_dependencies]
-expectest = "0.10"
+#[dev_dependencies]
+#expectest = "0.10"
 
 [badges]
 travis-ci = { repository = "echelon/kinect.rs" }
-
