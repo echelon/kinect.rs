@@ -65,6 +65,25 @@ impl Calibration {
         })
     }
 
+    /// Return the Calibration's color camera resolution width.
+    pub fn color_camera_resolution_width(&self) -> i32 {
+        self.0.color_camera_calibration.resolution_width
+    }
+
+    /// Return the Calibration's color camera resolution height.
+    pub fn color_camera_resolution_height(&self) -> i32 {
+        self.0.color_camera_calibration.resolution_height
+    }
+    /// Return the Calibration's depth camera resolution width.
+    pub fn depth_camera_resolution_width(&self) -> i32 {
+        self.0.depth_camera_calibration.resolution_width
+    }
+
+    /// Return the Calibration's depth camera resolution height.
+    pub fn depth_camera_resolution_height(&self) -> i32 {
+        self.0.depth_camera_calibration.resolution_height
+    }
+
     // TODO: Make this the `Debug` trait output instead.
     pub fn debug_print(&self) {
         println!("===== CALIBRATION =====");
