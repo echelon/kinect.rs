@@ -52,7 +52,10 @@ impl Image {
         };
 
         if result != k4a_sys::k4a_result_t_K4A_RESULT_SUCCEEDED {
-            return Err(CreateImageError { error_code: result });
+            // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+            // Linux uses u32 and Windows uses i32.
+            // This should be fixed in the `k4a-sys` build script.
+            return Err(CreateImageError { error_code: result as i32 });
         }
 
         Ok(Image(handle))

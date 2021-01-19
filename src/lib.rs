@@ -31,7 +31,7 @@ pub enum KinectError {
     UnableToGetSerialNumber,
     UnableToStartCameras { error_code: u32 },
     UnableToCreateImage { error_code: u32 },
-    UnableToGetSyncJackStatus { error_code: u32 },
+    UnableToGetSyncJackStatus { error_code: i32 },
 }
 
 /// Synchronization jack status.

@@ -44,7 +44,10 @@ impl Device {
             k4a_sys::k4a_device_open(device_index, &mut device_pointer)
         };
         if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
-            return Err(DeviceOpenError { error_code: result })
+            // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+            // Linux uses u32 and Windows uses i32.
+            // This should be fixed in the `k4a-sys` build script.
+            return Err(DeviceOpenError { error_code: result as i32 })
         }
         Ok(Device {
             device_pointer,
@@ -96,7 +99,10 @@ impl Device {
         };
 
         if result != k4a_sys::k4a_result_t_K4A_RESULT_SUCCEEDED {
-            return Err(KinectError::UnableToGetSyncJackStatus { error_code: result });
+            // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+            // Linux uses u32 and Windows uses i32.
+            // This should be fixed in the `k4a-sys` build script.
+            return Err(KinectError::UnableToGetSyncJackStatus { error_code: result as i32 });
         }
 
         Ok(SynchronizationJackStatus {
@@ -115,7 +121,10 @@ impl Device {
         };
 
         if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
-            return Err(DeviceStartCamerasError { error_code: result });
+            // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+            // Linux uses u32 and Windows uses i32.
+            // This should be fixed in the `k4a-sys` build script.
+            return Err(DeviceStartCamerasError { error_code: result as i32 });
         }
 
         return Ok(())
@@ -172,7 +181,10 @@ impl Device {
                 return Err(DeviceGetCaptureError::FailedError);
             }
             _ => {
-                return Err(DeviceGetCaptureError::UnexpectedError(result));
+                // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+                // Linux uses u32 and Windows uses i32.
+                // This should be fixed in the `k4a-sys` build script.
+                return Err(DeviceGetCaptureError::UnexpectedError(result as i32));
             }
         }
 
@@ -206,7 +218,10 @@ impl Device {
                     return Err(DeviceGetCalibrationError::FailedError);
                 },
                 _ => {
-                    return Err(DeviceGetCalibrationError::UnexpectedError(result));
+                    // NB: Linux and Windows platforms differ in integer types used here, so we cast this.
+                    // Linux uses u32 and Windows uses i32.
+                    // This should be fixed in the `k4a-sys` build script.
+                    return Err(DeviceGetCalibrationError::UnexpectedError(result as i32));
                 },
             }
 

@@ -11,7 +11,7 @@ repository = "https://github.com/echelon/kinect.rs"
 documentation = "https://docs.rs/kinect"
 
 [dependencies]
-k4a-sys-temp = "0.2.1"
+k4a-sys-temp = "0.2.3"
 
 #[dev_dependencies]
 #expectest = "0.10"

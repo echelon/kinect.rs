@@ -7,7 +7,7 @@ use std::error::Error;
 #[derive(Copy, Clone, Debug)]
 pub struct CreateImageError {
     /// The error code returned by libk4a.
-    pub error_code: u32,
+    pub error_code: i32,
 }
 
 impl fmt::Display for CreateImageError {
@@ -28,7 +28,7 @@ pub enum DeviceGetCalibrationError {
     /// Failed to get device calibration.
     FailedError,
     /// Unexpected error code returned by libk4a.
-    UnexpectedError(u32),
+    UnexpectedError(i32),
 }
 
 impl fmt::Display for DeviceGetCalibrationError {
@@ -56,7 +56,7 @@ pub enum DeviceGetCaptureError {
     /// There was a failure in getting the capture
     FailedError,
     /// Unexpected error code returned by libk4a
-    UnexpectedError(u32),
+    UnexpectedError(i32),
 }
 
 impl fmt::Display for DeviceGetCaptureError {
@@ -81,7 +81,7 @@ impl Error for DeviceGetCaptureError {
 /// Represents errors opening devices with `k4a_device_open`.
 #[derive(Copy, Clone, Debug)]
 pub struct DeviceOpenError {
-    pub error_code: u32,
+    pub error_code: i32,
 }
 
 impl fmt::Display for DeviceOpenError {
@@ -100,7 +100,7 @@ impl Error for DeviceOpenError {
 #[derive(Copy, Clone, Debug)]
 pub struct DeviceStartCamerasError {
     /// The error code returned by libk4a.
-    pub error_code: u32,
+    pub error_code: i32,
 }
 
 impl fmt::Display for DeviceStartCamerasError {
