@@ -1,7 +1,7 @@
 [package]
 name = "kinect"
 description = "A high level interface for Azure Kinect"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2018"
 keywords = [ "azure", "kinect", "vision", "tracking", "camera" ]
 authors = ["Brandon Thomas <bt@brand.io>",
