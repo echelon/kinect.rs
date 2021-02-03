@@ -52,7 +52,8 @@ impl Error for DeviceGetCalibrationError {
 #[derive(Copy, Clone, Debug)]
 pub enum DeviceGetCaptureError {
     /// It took too long to get the capture, and our timeout elapsed.
-    TimeoutError,
+    /// Error contains the original value of our timeout threshold (not the time elapsed).
+    TimeoutError { timeout_millis: i32 },
     /// There was a failure in getting the capture
     FailedError,
     /// Unexpected error code returned by libk4a
@@ -62,8 +63,9 @@ pub enum DeviceGetCaptureError {
 impl fmt::Display for DeviceGetCaptureError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            DeviceGetCaptureError::TimeoutError=>
-                write!(f, "DeviceGetCaptureError::TimeoutError"),
+            DeviceGetCaptureError::TimeoutError { timeout_millis }=>
+                write!(f, "DeviceGetCaptureError::TimeoutError (timeout of {} millis elapsed)",
+                       timeout_millis ),
             DeviceGetCaptureError::FailedError =>
                 write!(f, "DeviceGetCaptureError::FailedError"),
             DeviceGetCaptureError::UnexpectedError(code) =>

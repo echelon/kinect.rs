@@ -175,7 +175,7 @@ impl Device {
         match result {
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_SUCCEEDED => { /* ok, continue */ },
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_TIMEOUT => {
-                return Err(DeviceGetCaptureError::TimeoutError);
+                return Err(DeviceGetCaptureError::TimeoutError { timeout_millis: timeout_ms });
             },
             k4a_sys::k4a_wait_result_t_K4A_WAIT_RESULT_FAILED => {
                 return Err(DeviceGetCaptureError::FailedError);
