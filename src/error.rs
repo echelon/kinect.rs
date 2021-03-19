@@ -80,6 +80,36 @@ impl Error for DeviceGetCaptureError {
     }
 }
 
+/// Represents errors getting device serial numbers with `k4a_device_get_serialnum`.
+#[derive(Copy, Clone, Debug)]
+pub enum DeviceGetSerialNumberError {
+    /// Buffering error during initial request (1st API call).
+    CouldNotRequestError,
+    /// Buffering error when reading serial number (2nd API call).
+    CouldNotReadError,
+    /// Could not format as a UTF-8 string.
+    CouldNotFormatError,
+}
+
+impl fmt::Display for DeviceGetSerialNumberError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            DeviceGetSerialNumberError::CouldNotRequestError =>
+                write!(f, "DeviceGetSerialNumberError::CouldNotRequestError"),
+            DeviceGetSerialNumberError::CouldNotReadError =>
+                write!(f, "DeviceGetSerialNumberError::CouldNotReadError"),
+            DeviceGetSerialNumberError::CouldNotFormatError =>
+                write!(f, "DeviceGetSerialNumberError::CouldNotFormatError"),
+        }
+    }
+}
+
+impl Error for DeviceGetSerialNumberError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+
 /// Represents errors opening devices with `k4a_device_open`.
 #[derive(Copy, Clone, Debug)]
 pub struct DeviceOpenError {

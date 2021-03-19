@@ -9,7 +9,7 @@ use crate::SynchronizationJackStatus;
 use k4a_sys_temp as k4a_sys;
 use std::mem::MaybeUninit;
 use std::{ptr, fmt};
-use crate::error::{DeviceOpenError, DeviceStartCamerasError, DeviceGetCalibrationError, DeviceGetCaptureError};
+use crate::error::{DeviceOpenError, DeviceStartCamerasError, DeviceGetCalibrationError, DeviceGetCaptureError, DeviceGetSerialNumberError};
 
 /// A Kinect Device Handle
 #[derive(Debug)]
@@ -55,7 +55,7 @@ impl Device {
     }
 
     /// Fetch the device serial number.
-    pub fn get_serial_number(&self) -> Result<String, KinectError> {
+    pub fn get_serial_number(&self) -> Result<String, DeviceGetSerialNumberError> {
         // First we interrogate the serial number size.
         let mut serial_number_length: usize = 0;
 
@@ -64,7 +64,7 @@ impl Device {
         };
 
         if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_TOO_SMALL {
-            return Err(KinectError::UnableToGetSerialNumber);
+            return Err(DeviceGetSerialNumberError::CouldNotRequestError);
         }
 
         // Now we request to fill a serial number buffer.
@@ -76,7 +76,7 @@ impl Device {
         };
 
         if result != k4a_sys::k4a_buffer_result_t_K4A_BUFFER_RESULT_SUCCEEDED {
-            return Err(KinectError::UnableToGetSerialNumber);
+            return Err(DeviceGetSerialNumberError::CouldNotReadError);
         }
 
         // NB: Library shouldn't be returning i8's
@@ -84,7 +84,7 @@ impl Device {
 
         String::from_utf8(serial_number)
             .map(|s| s.trim_matches(char::from(0)).into()) // Remove trailing null byte
-            .map_err(|_| KinectError::UnableToGetSerialNumber)
+            .map_err(|_| DeviceGetSerialNumberError::CouldNotFormatError)
     }
 
     /// Get the device synchronization jack statuses.
